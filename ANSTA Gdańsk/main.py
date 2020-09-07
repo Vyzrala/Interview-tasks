@@ -32,9 +32,7 @@ def task_1():
     pricessing_time = time.time() - start_time
     print("Processing time (in seconds) =", pricessing_time)
     print("Memory =", sys.getsizeof(result))
-    print("\nNumber of postal codes =", len(result))
     print(*result, sep=' | ')
-    print(type(result))
 
 
 """
