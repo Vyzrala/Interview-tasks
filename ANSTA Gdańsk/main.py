@@ -2,6 +2,7 @@ import time
 import sys
 from itertools import chain
 
+
 """
     TASK 1:
     GENERATOR KODÓW POCZTOWYCH
@@ -24,7 +25,6 @@ def generate_postals(start, end):
                     if i > 99  else (str(prefix) + '-0' + str(i)
                         if i > 9 else str(prefix) + '-00' + str(i))
                             for i in range(scope[0], scope[1] + 1))
-
 
 def task_1():
     print("\nTASK 1\n")
