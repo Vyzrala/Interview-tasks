@@ -7,32 +7,38 @@ from itertools import chain
     GENERATOR KODÓW POCZTOWYCH
     przyjmuje 2 stringi: "79-900" i "80-155" i zwraca listę kodów pomiędzy nimi
 """
-def postal_codes(start, end):
-    prefix_start, postfix_start = start.split("-")
-    prefix_end, postfix_end = end.split("-")
-    postal_codes_list_1 = (prefix_start + "-" + str(i)
-                            for i in range(int(postfix_start), 1000, 1))
+def generate_postals(start, end):
+    pre_start, post_start = list(map(lambda x:int(x), start.split('-')))
+    pre_end, post_end = list(map(lambda x:int(x), end.split('-')))
+    prefixes = [i for i in range(pre_start, pre_end + 1)]
+    postals = {pre_start: [post_start, 999]}  # First postal
 
-    postal_codes_list_2 = (prefix_end + "-" + str(i)
-                            if len(str(i)) == 3
-                                else (prefix_end + "-0" + str(i)
-                                    if len(str(i)) == 2
-                                        else prefix_end + "-00" + str(i))
-                                            for i in range(0, int(postfix_end) + 1, 1))
-    
-    return chain(postal_codes_list_1, postal_codes_list_2)
+    # Catching postal codes between 'start' and 'end' postals
+    mid_prefixes = prefixes[1:-1]
+    for prefix in mid_prefixes:
+        postals[prefix] = [0, 999]
+        
+    postals[pre_end] = [0, post_end]  # Last postal
+    for prefix, scope in postals.items():
+       yield (str(prefix) + '-' + str(i) 
+                    if i > 99  else (str(prefix) + '-0' + str(i)
+                        if i > 9 else str(prefix) + '-00' + str(i))
+                            for i in range(scope[0], scope[1] + 1))
+
 
 def task_1():
-    start = "79-990"
-    end = "80-155"
+    print("\nTASK 1\n")
+    start = '79-900'
+    end = '80-155'
     start_time = time.time()
-    result = postal_codes(start, end)
-    print("\nTASK 1:\n")
-    print("Input data:", "\nFirst postal code =", start, "\nLast postal code =", end, "\n\nResults:")
-    pricessing_time = time.time() - start_time
-    print("Processing time (in seconds) =", pricessing_time)
-    print("Memory =", sys.getsizeof(result))
-    print(*result, sep=' | ')
+    memory = []
+    for g in generate_postals(start, end):
+        print(*g, sep=' | ', end=' | ')
+        memory.append(sys.getsizeof(g))
+    
+    durration = time.time() - start_time
+    print("\n\nFrom {} to {} in {:.10f} seconds with only {} bytes.".format(start, end, durration, sum(memory)))
+
 
 
 """
@@ -46,8 +52,8 @@ def task_2():
     input_list = [2,3,7,4,9]
     n = 10
     print("\nTASK 2:\n")
-    print("Input data:", "\nList =", input_list, "\nN =", n)
-    print("\nResult =", lacking_elements(input_list, n))
+    print("Input data:\nList: {}\nN = {}".format(input_list, n))
+    print("Missing elements:", lacking_elements(input_list, n))
 
 
 """
@@ -61,11 +67,12 @@ def task_3():
     start = 2
     end = 5.5
     step = .5
-    print("\nTASK 3:\n")
-    print("Input data:", "\nStart =", start, "\nEnd =", end, "\nStep =", step)
+    print("\nTASK 3:")
+    print("\nFrom {} to {} with step of {}".format(start, end, step))
     result = generate_list(start, end, step)
-    print("\nResult =", result, "\nDetails:")
-    [print("Item =", i, "| Type:", type(i)) for i in result]
+    print("Result =", result)
+    print("\nDetails:")
+    [print("Item  {}  is type of  {}".format(i, type(i))) for i in result]
 
 
 def main():
@@ -76,3 +83,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+# Author: Marcin Hebdzyński
+# Email: hebdzynski.m@gmail.com
